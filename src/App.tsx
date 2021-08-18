@@ -1,17 +1,19 @@
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { Dashboard } from './pages/Dashboard';
+import { Router } from 'react-router-dom'
+import { AuthContextProvider } from './contexts/auth';
 
-import { Home } from "./pages/Home";
+import { Routes } from './routes';
+import history from './routes/history';
 
 
 function App() {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path='/' component={Home} exact/>
-        <Route path='/dashboard' component={Dashboard}/>
-      </Switch>
-    </BrowserRouter>
+
+    <AuthContextProvider>
+      <Router history={history}>
+        <Routes />
+      </Router>
+    </AuthContextProvider>
+
   );
 }
 
