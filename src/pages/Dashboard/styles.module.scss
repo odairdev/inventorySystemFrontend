@@ -1,0 +1,39 @@
+.container:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+span {
+    display: block;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+
+    margin-top: 2rem;
+
+    .card {
+        display: block;
+        padding: 2rem 2.5rem;
+        background-color: rgba($color: #3ea2af, $alpha: 1.0);
+        border-radius: 0.5rem;
+        cursor: pointer;
+
+        transition: filter 0.2s;
+
+        &:hover {
+            filter: brightness(0.95);
+            box-shadow: 0px 0px 7px rgb(111, 212, 187);
+        }
+    }
+
+    .card a {
+        text-decoration: none;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+}

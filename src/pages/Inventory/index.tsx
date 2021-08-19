@@ -1,5 +1,11 @@
+import { CreateNewForm } from "../../components/CreateNewForm";
+import { MainContainer } from "../../components/MainContainer";
 
 
 export function Inventory() {
-    return <h1>Estoque</h1>
+    return (
+        <MainContainer>
+            <CreateNewForm />
+        </MainContainer>
+    )
 }

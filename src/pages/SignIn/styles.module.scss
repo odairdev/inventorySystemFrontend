@@ -50,6 +50,23 @@
                 font-weight: bold;
             }
         }
+
+        .registerButton {
+            display: block;
+            margin-top: 0.5rem;
+            margin-left: 1rem;
+
+            & a {
+                font-size: 0.8rem;
+                text-decoration: none;
+                color: rgb(0, 89, 255);
+
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
     }
 
     .loginForm {
@@ -99,4 +116,6 @@
         }
         
     }
+
+
 }

@@ -1,0 +1,12 @@
+.createContainer {
+    display: flex;
+    align-items: center;
+
+    & span {
+        margin-right: 2rem;
+    }
+
+    label + input {
+        margin-right: 1rem;
+    }
+}

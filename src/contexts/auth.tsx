@@ -4,7 +4,9 @@ import { createContext } from "react";
 import history from "../routes/history";
 import api from "../services/api";
 
-interface UserProps {
+export interface UserProps {
+  id: string;
+  name: string;
   email: string;
   password: string;
 }
@@ -13,8 +15,9 @@ interface AuthContextData {
   loading: boolean;
   signed: boolean;
   user: object | null;
-  signIn: ({ email, password }: UserProps) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
+  signUp: ( name: string, email: string, password: string) => void;
 }
 
 interface AuthProviderProps {
@@ -24,7 +27,7 @@ interface AuthProviderProps {
 const AuthContext = createContext({} as AuthContextData);
 
 export function AuthContextProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<object | null>(null);
+  const [user, setUser] = useState<UserProps | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,7 +50,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     setLoading(false);
   }, []);
 
-  async function signIn({ email, password }: UserProps) {
+  async function signIn(email: string, password: string) {
     const response = await api.post("/auth", { email, password });
 
     setUser(response.data.user);
@@ -72,9 +75,20 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     history.push("/dashboard");
   }
 
+  async function signUp(name: string, email: string, password: string) {
+
+    try {
+      await api.post('/users', {name, email, password})
+      
+      alert('Usuário criado com sucesso')
+    } catch(err) {
+      alert(err)
+    }    
+  }
+
   return (
     <AuthContext.Provider
-      value={{ signed: !!user, loading, user, signIn, signOut }}
+      value={{ signed: !!user, loading, user, signIn, signOut, signUp }}
     >
       {children}
     </AuthContext.Provider>

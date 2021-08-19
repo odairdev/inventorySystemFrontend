@@ -1,5 +1,11 @@
+import { CreateNewForm } from "../../components/CreateNewForm";
+import { MainContainer } from "../../components/MainContainer";
 
 
 export function Products() {
-    return <h1>Produtos</h1>
+    return (
+        <MainContainer>
+            <CreateNewForm />
+        </MainContainer>
+    )
 }
