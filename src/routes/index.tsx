@@ -1,39 +1,43 @@
 import { Redirect, Route, RouteProps, Switch } from "react-router-dom";
+import { NavBar } from "../components/NavBar";
 import { useAuth } from "../hooks/useAuth";
 import { Dashboard } from "../pages/Dashboard";
+import { Inventory } from "../pages/Inventory";
+import { Products } from "../pages/Products";
 import { SignIn } from "../pages/SignIn";
 
 interface CustomRouteProps extends RouteProps {
-    isPrivate: boolean;
+  isPrivate: boolean;
 }
 
 export function Routes() {
-    const { signed, loading } = useAuth()
+  const { signed, loading } = useAuth();
 
-    console.log(loading)
+  function CustomRoute({ isPrivate, ...rest }: CustomRouteProps) {
+    if (loading) {
+      return <h1>Loading...</h1>;
+    }
 
-    function CustomRoute({isPrivate, ...rest}: CustomRouteProps) {      
-        if (loading) {
-          return <h1>Loading...</h1>;
-        }
-      
-        if (isPrivate && !signed) {
-          return <Redirect to="/" exact />
-        }
+    if (isPrivate && !signed) {
+      return <Redirect to="/" exact />;
+    }
 
-        if(signed && window.location.pathname === '/') {
-          return <Redirect to="/dashboard" exact />
-        }
+    if (signed && window.location.pathname === "/") {
+      return <Redirect to="/dashboard" exact />;
+    }
 
-        console.log(window.location.pathname)
-      
-        return <Route {...rest} />;
-      }
+    return <Route {...rest} />;
+  }
 
-    return (
-        <Switch>
-            <CustomRoute isPrivate={false}  path="/" component={SignIn} exact />
-            <CustomRoute isPrivate exact path="/dashboard" component={Dashboard} />
-        </Switch>
-    )
+  return (
+    <>
+      {signed ? <NavBar /> : true}
+      <Switch>
+        <CustomRoute isPrivate={false} path="/" component={SignIn} exact />
+        <CustomRoute isPrivate exact path="/dashboard" component={Dashboard} />
+        <CustomRoute isPrivate exact path="/products" component={Products} />
+        <CustomRoute isPrivate exact path="/inventory" component={Inventory} />
+    </Switch>
+    </>
+  );
 }
