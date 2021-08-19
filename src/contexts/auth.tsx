@@ -77,6 +77,8 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
 
   async function signUp(name: string, email: string, password: string) {
 
+
+
     try {
       await api.post('/users', {name, email, password})
       
