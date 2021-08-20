@@ -1,6 +1,5 @@
 import { FormEvent, useState } from "react";
 import * as Yup from 'yup'
-import { ValidationError } from 'yup';
 
 import homeImg from "../../assets/home.jpg";
 import styles from "./styles.module.scss";

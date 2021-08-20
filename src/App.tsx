@@ -1,19 +1,25 @@
-import { Router } from 'react-router-dom'
-import { AuthContextProvider } from './contexts/auth';
+import { Router } from "react-router-dom";
+import { AuthContextProvider } from "./contexts/auth";
+import { CrudContextProvider } from "./contexts/crud";
+import Modal from "react-modal";
 
-import { Routes } from './routes';
-import history from './routes/history';
+import { Routes } from "./routes";
+import history from "./routes/history";
+import { ModalContextProvider } from "./contexts/ModalContext";
 
+Modal.setAppElement("#root");
 
 function App() {
   return (
-
-    <AuthContextProvider>
-      <Router history={history}>
-        <Routes />
-      </Router>
-    </AuthContextProvider>
-
+    <CrudContextProvider>
+      <ModalContextProvider>
+        <AuthContextProvider>
+          <Router history={history}>
+            <Routes />
+          </Router>
+        </AuthContextProvider>
+      </ModalContextProvider>
+    </CrudContextProvider>
   );
 }
 

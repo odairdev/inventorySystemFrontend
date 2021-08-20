@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -6,17 +6,21 @@ import { SideBarData } from "./SideBarData";
 
 import styles from "./styles.module.scss";
 import { useAuth } from "../../hooks/useAuth";
+import { useRef } from "react";
+import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
 
 export function NavBar() {
   const { signOut } = useAuth();
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const navBarRef = useRef(null)
+  useOutsideAlerter(navBarRef, setIsSideBarOpen)
 
   function showSidebar() {
     setIsSideBarOpen(!isSideBarOpen);
   }
 
   return (
-    <>
+    <div ref={navBarRef}>
       <div className={styles.navbar}>
         <Link to="#" className={styles.menuBars}>
           <FaIcons.FaBars onClick={() => showSidebar()} />
@@ -52,6 +56,6 @@ export function NavBar() {
           </li>
         </ul>
       </nav>
-    </>
+    </div>
   );
 }

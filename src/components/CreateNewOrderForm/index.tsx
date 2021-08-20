@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { useCrud } from "../../hooks/useCrud";
 import styles from "./styles.module.scss";
 
 interface CreateNewFormProps {
   isProduct: boolean;
+  createNewProduct: (name: string, category: string, amount:number) => Promise<void>;
 }
 
-export function CreateNewForm({ isProduct }: CreateNewFormProps) {
-  const [name, setName] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
-
-  const { createNewProduct } = useCrud();
+export function CreateNewOrderForm({ isProduct, createNewProduct }: CreateNewFormProps) {
+  const [name, setName] = useState<string>('')
+  const [category, setCategory] = useState<string>('')
+  const [amount, setAmount] = useState<number>(0)
 
   return (
     <>
@@ -22,34 +20,14 @@ export function CreateNewForm({ isProduct }: CreateNewFormProps) {
             <div>
               <div>
                 <label>Nome</label>
-                <input
-                  type="text"
-                  placeholder="Produto"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
+                <input type="text" placeholder="Produto" value={name} onChange={e => setName(e.target.value)} />
                 <label>Categoria</label>
-                <input
-                  type="text"
-                  placeholder="Enlatados"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
+                <input type="text" placeholder="Enlatados" value={category} onChange={e => setCategory(e.target.value)}/>
               </div>
               <div>
                 <label>Quantidade</label>
-                <input
-                  type="number"
-                  placeholder="5"
-                  value={amount}
-                  onChange={(e) => setAmount(Number(e.target.value))}
-                />
-                <button
-                  type="submit"
-                  onClick={() => createNewProduct(name, category, amount)}
-                >
-                  Cadastrar
-                </button>
+                <input type="number" placeholder="5" value={amount} onChange={e => setAmount(Number(e.target.value))}/>
+                <button type="submit" onClick={() => createNewProduct(name, category, amount)}>Cadastrar</button>
               </div>
             </div>
           </form>

@@ -22,18 +22,16 @@ span {
         border-radius: 0.5rem;
         cursor: pointer;
 
+        text-decoration: none;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+
         transition: filter 0.2s;
 
         &:hover {
             filter: brightness(0.95);
             box-shadow: 0px 0px 7px rgb(111, 212, 187);
         }
-    }
-
-    .card a {
-        text-decoration: none;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: bold;
     }
 }

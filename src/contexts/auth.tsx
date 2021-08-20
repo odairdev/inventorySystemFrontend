@@ -38,7 +38,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
       if (storagedUser && storagedToken) {
         api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
 
-        new Promise((promise) => setTimeout(promise, 1000));
+        new Promise((promise) => setTimeout(promise, 2000));
 
         const parsedUser = JSON.parse(storagedUser);
 
@@ -51,22 +51,28 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   }, []);
 
   async function signIn(email: string, password: string) {
-    const response = await api.post("/auth", { email, password });
+    try {
+      const response = await api.post("/auth", { email, password });
 
-    setUser(response.data.user);
+      setUser(response.data.user);
 
-    api.defaults.headers["Authorization"] = `Bearer ${response.data.token}`;
+      api.defaults.headers.authorization = `Bearer ${response.data.token}`;
 
-    localStorage.setItem(
-      "@InventoryAuth:user",
-      JSON.stringify(response.data.user)
-    );
-    localStorage.setItem(
-      "@InventoryAuth:token",
-      JSON.stringify(response.data.token)
-    );
+      const token = JSON.stringify(response.data.token)
 
-    history.push("/dashboard");
+      localStorage.setItem(
+        "@InventoryAuth:user",
+        (JSON.stringify(response.data.user))
+      );
+      localStorage.setItem(
+        "@InventoryAuth:token",
+        JSON.stringify(response.data.token)
+      );
+
+      history.push("/dashboard");
+    } catch(err) {
+      alert(err.response.data.error)
+    }
   }
 
   function signOut() {
