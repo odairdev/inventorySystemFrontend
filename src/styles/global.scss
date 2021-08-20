@@ -6,7 +6,7 @@
 
 :root {
   --light-blue: #478cac;
-  --blueish-green: #12526f;
+  --blueish-green: #1b7eac;
   --red: #e52e4d;
   --green: #33cc95;
 
@@ -37,6 +37,10 @@ button,
 textarea {
   font-family: "Roboto", sans-serif;
   font: 400 1rem;
+}
+
+button {
+  cursor: pointer;
 }
 
 .react-modal-overlay {

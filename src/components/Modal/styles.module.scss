@@ -1,0 +1,57 @@
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h2 {
+        font-size: 1.5rem;
+        color: var(--text-title);
+        margin-bottom: 2rem;
+    }
+
+    datalist + input {
+        margin-top: 1rem;
+    }
+
+    input {
+        width: 80%;
+        padding: 0 1.5rem;
+        height: 2rem;
+        border-radius: 0.25rem;
+        border: 1px solid #d7d7d7;
+
+        outline-color: #a7a7a7;
+
+        background: #e7e9ee;
+
+        font-weight: 400;
+        font-size: 1rem;
+
+        & + input {
+            margin-top: 1rem;
+        }
+
+        
+        &::placeholder {
+            color: var(--text-body);
+        }
+    }
+
+    button[type="submit"] {
+        height: 2rem;
+        width: 80%;
+        margin-top: 1rem;
+        border-radius: 0.25rem;
+        border: 0;
+        background-color: var(--blueish-green);
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 600;
+        line-height: 1.5rem;
+        letter-spacing: 0.04rem;
+
+        &:hover {
+            filter: brightness(0.9);
+        }
+    }
+}

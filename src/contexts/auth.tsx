@@ -33,10 +33,10 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     function loadStoragedData() {
       const storagedUser = localStorage.getItem("@InventoryAuth:user");
-      const storagedToken = localStorage.getItem("@InventoryAuth:token");
+      // const storagedToken = localStorage.getItem("@InventoryAuth:token");
 
-      if (storagedUser && storagedToken) {
-        api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
+      if (storagedUser) {
+        // api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
 
         new Promise((promise) => setTimeout(promise, 2000));
 
@@ -56,7 +56,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
 
       setUser(response.data.user);
 
-      api.defaults.headers.authorization = `Bearer ${response.data.token}`;
+      api.defaults.headers.common.authentication = `Bearer ${response.data.token}`;
 
       const token = JSON.stringify(response.data.token)
 
@@ -66,7 +66,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
       );
       localStorage.setItem(
         "@InventoryAuth:token",
-        JSON.stringify(response.data.token)
+        (token.slice(1, token.length - 1))
       );
 
       history.push("/dashboard");

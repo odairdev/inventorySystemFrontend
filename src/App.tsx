@@ -11,15 +11,15 @@ Modal.setAppElement("#root");
 
 function App() {
   return (
-    <CrudContextProvider>
-      <ModalContextProvider>
-        <AuthContextProvider>
+    <AuthContextProvider>
+      <CrudContextProvider>
+        <ModalContextProvider>
           <Router history={history}>
             <Routes />
           </Router>
-        </AuthContextProvider>
-      </ModalContextProvider>
-    </CrudContextProvider>
+        </ModalContextProvider>
+      </CrudContextProvider>
+    </AuthContextProvider>
   );
 }
 

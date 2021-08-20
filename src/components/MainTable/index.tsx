@@ -30,10 +30,6 @@ export function MainTable({ isProduct }: MainTableProps) {
     }
   }
 
-  function handleProductModal() {
-    handleOpenModal();
-  }
-
   useEffect(() => {
     if (isProduct) {
       isDataAvailable(products);
@@ -112,14 +108,14 @@ export function MainTable({ isProduct }: MainTableProps) {
               <tbody>
                 {inventoryOrders.map((order) => {
                   return (
-                    <tr>
+                    <tr key={order.id}>
                       <td>{order.product.name}</td>
                       <td className={styles.type}>{translateOrdertype(order.type)}</td>
                       <td>{order.order_amount}</td>
                       <td>12/5/2015</td>
                       <td>
                         <div className={styles.actionsCell}>
-                          <button type="button" className={styles.edit}>
+                          <button type="button" className={styles.edit} onClick={handleOpenModal}>
                             Editar
                           </button>
                           <button type="button" className={styles.delete}>
