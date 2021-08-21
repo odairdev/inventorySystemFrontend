@@ -9,7 +9,7 @@ interface CreateNewFormProps {
 export function CreateNewForm({ isProduct }: CreateNewFormProps) {
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(1);
 
   const { createNewProduct } = useCrud();
 

@@ -30,29 +30,29 @@ export interface ProductsInterface {
 }
 
 export interface InventoryOrders {
+  id: string;
+  type: string;
+  category: string;
+  order_amount: number;
+  created_at: Date;
+  product: {
     id: string;
-    type: string;
-    category: string;
-    order_amount: number;
-    created_at: Date;
-    product: {
-        id: string;
-        name: string;
-    }
-  }
+    name: string;
+  };
+}
 
 export const CrudContext = createContext({} as CrudContextData);
 
 export function CrudContextProvider({ children }: AuthProviderProps) {
   const [products, setProducts] = useState<ProductsInterface[]>([]);
-  const [inventoryOrders, setInventoryOrders] = useState<InventoryOrders[]>([])
+  const [inventoryOrders, setInventoryOrders] = useState<InventoryOrders[]>([]);
 
   useEffect(() => {
     api
       .get("/products")
       .then((response) => setProducts(response.data.products));
 
-      api
+    api
       .get("/inventory")
       .then((response) => setInventoryOrders(response.data.orders));
   }, []);
@@ -62,6 +62,21 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
     category: string,
     amount: number
   ) {
+
+    if (
+      name.length === 0 ||
+      category.length === 0 ||
+      name.length > 20 ||
+      category.length === 20
+    ) {
+      alert("Nome/Categoria precisam ter de 1 a 20 letras.");
+      return
+    }
+
+    if(amount <= 0 || Number.isInteger(amount) == false) {
+      alert('Quantidade precisa ser maior que zero e um número inteiro')
+    }
+
     const response = api.post("products", { name, category, amount });
 
     const { product } = (await response).data;
@@ -94,8 +109,22 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
     alert("Produto alterado com sucesso");
   }
 
+  async function createNewOrder(
+    type: 'in' | 'out',
+    name: string,
+    amount: number) {
+      
+      if(amount <= 0 || Number.isInteger(amount) == false) {
+        alert('Quantidade precisa ser maior que zero e um número inteiro')
+      }
+      //Arrumar backend primeiro
+      const response = api.post('/inventory', {type, name, amount})
+  }
+
   return (
-    <CrudContext.Provider value={{ products, inventoryOrders, createNewProduct, updateProduct }}>
+    <CrudContext.Provider
+      value={{ products, inventoryOrders, createNewProduct, updateProduct }}
+    >
       {children}
     </CrudContext.Provider>
   );
