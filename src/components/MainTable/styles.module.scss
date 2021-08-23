@@ -102,3 +102,33 @@ table {
       }
     }
   }
+
+  .pagination {
+    margin-top: 1.5rem;
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .pagination a {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--light-blue);
+    color: var(--light-blue);
+  }
+  
+  .pagination__link {
+    font-weight: bold;
+  }
+  
+  .pagination__linkActive a {
+    color: #fff;
+    background: var(--light-blue);
+  }
+  
+  .pagination__linkDisabled a {
+    color: rgb(198, 197, 202);
+    border: 1px solid rgb(198, 197, 202);
+  }

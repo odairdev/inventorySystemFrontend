@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ModalContext } from "../../contexts/ModalContext";
 import { useCrud } from "../../hooks/useCrud";
 import styles from "./styles.module.scss";
+import ReactPaginate from "react-paginate";
 
 interface MainTableProps {
   isProduct: boolean;
@@ -19,14 +20,28 @@ export interface ProductsInterface {
 
 export function MainTable({ isProduct }: MainTableProps) {
   const [dataAvailable, isDataAvailable] = useState<any | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const { products, inventoryOrders, updateProduct } = useCrud();
   const { handleOpenModal } = useContext(ModalContext);
 
+  const PER_PAGE = 5;
+  const offset = currentPage * PER_PAGE;
+
+  const productsPageCount = Math.ceil(products.length / PER_PAGE);
+  const productsPageData = products.slice(offset, offset + PER_PAGE);
+
+  const ordersPageCount = Math.ceil(products.length / PER_PAGE);
+  const ordersPageData = inventoryOrders.slice(offset, offset + PER_PAGE);
+
+  function handlePageClick(data: any) {
+    setCurrentPage(data.selected)
+  }
+
   function translateOrdertype(orderType: string) {
-    if(orderType === 'in') {
-      return 'Entrada'
+    if (orderType === "in") {
+      return "Entrada";
     } else {
-      return 'Saída'
+      return "Saída";
     }
   }
 
@@ -41,6 +56,7 @@ export function MainTable({ isProduct }: MainTableProps) {
   return (
     <>
       {isProduct ? (
+        <>
         <table>
           {dataAvailable ? (
             <>
@@ -54,7 +70,7 @@ export function MainTable({ isProduct }: MainTableProps) {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => {
+                {productsPageData.map((product) => {
                   return (
                     <tr key={product.id}>
                       <td>{product.name}</td>
@@ -92,7 +108,22 @@ export function MainTable({ isProduct }: MainTableProps) {
             </thead>
           )}
         </table>
+        <ReactPaginate
+        pageCount={productsPageCount}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        onPageChange={handlePageClick}
+        previousLabel='←'
+        nextLabel='→'
+        containerClassName={styles.pagination}
+        previousLinkClassName={styles.pagination__link}
+        nextLinkClassName={styles.pagination__link}
+        disabledClassName={styles.pagination__linkDisabled}
+        activeClassName={styles.pagination__linkActive}
+      />
+        </>
       ) : (
+        <>
         <table>
           {dataAvailable ? (
             <>
@@ -106,16 +137,22 @@ export function MainTable({ isProduct }: MainTableProps) {
                 </tr>
               </thead>
               <tbody>
-                {inventoryOrders.map((order) => {
+                {ordersPageData.map((order) => {
                   return (
                     <tr key={order.id}>
                       <td>{order.product.name}</td>
-                      <td className={styles.type}>{translateOrdertype(order.type)}</td>
+                      <td className={styles.type}>
+                        {translateOrdertype(order.type)}
+                      </td>
                       <td>{order.order_amount}</td>
                       <td>12/5/2015</td>
                       <td>
                         <div className={styles.actionsCell}>
-                          <button type="button" className={styles.edit} onClick={handleOpenModal}>
+                          <button
+                            type="button"
+                            className={styles.edit}
+                            onClick={handleOpenModal}
+                          >
                             Editar
                           </button>
                           <button type="button" className={styles.delete}>
@@ -138,6 +175,20 @@ export function MainTable({ isProduct }: MainTableProps) {
             </thead>
           )}
         </table>
+        <ReactPaginate
+        pageCount={ordersPageCount}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        onPageChange={handlePageClick}
+        previousLabel='←'
+        nextLabel='→'
+        containerClassName={styles.pagination}
+        previousLinkClassName={styles.pagination__link}
+        nextLinkClassName={styles.pagination__link}
+        disabledClassName={styles.pagination__linkDisabled}
+        activeClassName={styles.pagination__linkActive}
+      />
+      </>
       )}
     </>
   );
