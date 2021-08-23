@@ -15,6 +15,7 @@ interface CrudContextData {
     category: string,
     amount: number
   ) => Promise<void>;
+  createNewOrder: (productId: string, type: string, amount: number) => Promise<void>
 }
 
 interface AuthProviderProps {
@@ -110,20 +111,26 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
   }
 
   async function createNewOrder(
-    type: 'in' | 'out',
-    name: string,
+    productId: string,
+    type: string,
     amount: number) {
       
       if(amount <= 0 || Number.isInteger(amount) == false) {
         alert('Quantidade precisa ser maior que zero e um número inteiro')
       }
-      //Arrumar backend primeiro
-      const response = api.post('/inventory', {type, name, amount})
+
+      const response = api.post('/inventory', {productId, type, order_amount: amount})
+
+      const { order } = (await response).data;
+
+      setProducts([...inventoryOrders, order]);
+
+      alert("Ordem Criada com sucesso");
   }
 
   return (
     <CrudContext.Provider
-      value={{ products, inventoryOrders, createNewProduct, updateProduct }}
+      value={{ products, inventoryOrders, createNewProduct, updateProduct, createNewOrder }}
     >
       {children}
     </CrudContext.Provider>
