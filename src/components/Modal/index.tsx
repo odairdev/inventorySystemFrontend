@@ -6,17 +6,20 @@ import closeImg from "../../assets/close.svg";
 import styles from "./styles.module.scss";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useCrud } from "../../hooks/useCrud";
 
 interface ModalWindowProps {
   isProduct: boolean;
 }
 
 export function ModalWindow({ isProduct }: ModalWindowProps) {
-  const { isModalOpen, selectedProduct, selectedOrder, handleCloseModal } = useContext(ModalContext);
+  const { isModalOpen, selectedProduct, selectedOrder, handleCloseModal } =
+    useContext(ModalContext);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
   const [type, setType] = useState("");
+  const { updateProduct } = useCrud();
 
   function typeInputOnChange(event: React.FormEvent<HTMLInputElement>) {
     const { value } = event.currentTarget;
@@ -29,19 +32,19 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
   };
 
   useEffect(() => {
-    if(isProduct) {
-      setName(selectedProduct.name)
-      setCategory(selectedProduct.category)
-      setAmount(selectedProduct.amount)
+    if (isProduct) {
+      setName(selectedProduct.name);
+      setCategory(selectedProduct.category);
+      setAmount(selectedProduct.amount);
     } else {
-      if(selectedOrder.type === 'in') {
-        setType('Entrada')
+      if (selectedOrder.type === "in") {
+        setType("Entrada");
       } else {
-        setType('Saída')
+        setType("Saída");
       }
-      setAmount(selectedOrder.order_amount)
+      setAmount(selectedOrder.order_amount);
     }
-  }, [isProduct, selectedProduct, selectedOrder])
+  }, [isProduct, selectedProduct, selectedOrder]);
 
   return (
     <Modal
@@ -50,7 +53,6 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
       overlayClassName="react-modal-overlay"
       className="react-modal-content"
     >
-      {isProduct}
       <button
         type="button"
         onClick={handleCloseModal}
@@ -58,16 +60,30 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
       >
         <img src={closeImg} alt="Fechar" />{" "}
       </button>
-      <form className={styles.formContainer}>
+      <form
+        className={styles.formContainer}
+        onSubmit={(e) =>
+          updateProduct(e, selectedProduct.id, name, category, amount)
+        }
+      >
         <h2>{isProduct ? "Editar Produto" : "Editar Ordem"}</h2>
 
         {isProduct ? (
-          <input
-            type="text"
-            placeholder="Nome"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <>
+            <input
+              type="text"
+              placeholder="Nome"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+
+            <input
+              type="text"
+              placeholder="Categoria"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+          </>
         ) : (
           <>
             <input

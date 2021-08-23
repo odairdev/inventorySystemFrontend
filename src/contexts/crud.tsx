@@ -10,6 +10,7 @@ interface CrudContextData {
     amount: number
   ) => Promise<void>;
   updateProduct: (
+    e: React.FormEvent<HTMLFormElement>,
     productId: string,
     name: string,
     category: string,
@@ -88,12 +89,30 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
   }
 
   async function updateProduct(
+    e: React.FormEvent<HTMLFormElement>,
     productId: string,
     name: string,
     category: string,
     amount: number
   ) {
-    await api.put("products", { productId, name, category, amount });
+
+    e.preventDefault()
+
+    if (
+      name.length === 0 ||
+      category.length === 0 ||
+      name.length > 20 ||
+      category.length === 20
+    ) {
+      alert("Nome/Categoria precisam ter de 1 a 20 letras.");
+      return
+    }
+
+    if(amount <= 0 || Number.isInteger(amount) == false) {
+      alert('Quantidade precisa ser maior que zero e um número inteiro')
+    }
+
+    await api.put("products", { productId, name, category, amount }).catch(error => console.log(error));
 
     const newProductsArray = [...products];
 
@@ -108,6 +127,10 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
     setProducts([...newProductsArray]);
 
     alert("Produto alterado com sucesso");
+  }
+
+  async function deleteProduct() {
+    
   }
 
   async function createNewOrder(
