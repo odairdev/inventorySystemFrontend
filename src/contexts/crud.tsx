@@ -17,7 +17,16 @@ interface CrudContextData {
     amount: number
   ) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
-  createNewOrder: (productId: string, type: string, amount: number) => Promise<void>;
+  createNewOrder: (
+    productId: string,
+    type: string,
+    amount: number
+  ) => Promise<void>;
+  updateOrder: (e: React.FormEvent<HTMLFormElement>,
+    orderId: string,
+    productId: string,
+    type: 'in' | 'out',
+    order_amount: number) => Promise<void>;
   deleteOrder: (orderId: string) => Promise<void>;
 }
 
@@ -66,7 +75,6 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
     category: string,
     amount: number
   ) {
-
     if (
       name.length === 0 ||
       category.length === 0 ||
@@ -74,11 +82,11 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
       category.length === 20
     ) {
       alert("Nome/Categoria precisam ter de 1 a 20 letras.");
-      return
+      return;
     }
 
-    if(amount <= 0 || Number.isInteger(amount) == false) {
-      alert('Quantidade precisa ser maior que zero e um número inteiro')
+    if (amount <= 0 || Number.isInteger(amount) == false) {
+      alert("Quantidade precisa ser maior que zero e um número inteiro");
     }
 
     const response = api.post("products", { name, category, amount });
@@ -97,8 +105,7 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
     category: string,
     amount: number
   ) {
-
-    e.preventDefault()
+    e.preventDefault();
 
     if (
       name.length === 0 ||
@@ -107,14 +114,16 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
       category.length === 20
     ) {
       alert("Nome/Categoria precisam ter de 1 a 20 letras.");
-      return
+      return;
     }
 
-    if(amount <= 0 || Number.isInteger(amount) == false) {
-      alert('Quantidade precisa ser maior que zero e um número inteiro')
+    if (amount <= 0 || Number.isInteger(amount) == false) {
+      alert("Quantidade precisa ser maior que zero e um número inteiro");
     }
 
-    await api.put("products", { productId, name, category, amount }).catch(error => console.log(error));
+    await api
+      .put("products", { productId, name, category, amount })
+      .catch((error) => console.log(error));
 
     const newProductsArray = [...products];
 
@@ -132,54 +141,125 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
   }
 
   async function deleteProduct(productId: string) {
-    if(!window.confirm('Você quer mesmo deletar esse produto?')) {
-      return
+    if (!window.confirm("Você quer mesmo deletar esse produto?")) {
+      return;
     }
 
-    await api.delete(`/products/${productId}`).catch(error => console.log(error.message))
+    await api
+      .delete(`/products/${productId}`)
+      .catch((error) => console.log(error.message));
 
     const newProductsList = products.filter(
       (product) => product.id !== productId
     );
 
-    setProducts(newProductsList)
+    setProducts(newProductsList);
   }
 
   async function createNewOrder(
     productId: string,
     type: string,
-    amount: number) {
-      
-      if(amount <= 0 || Number.isInteger(amount) == false) {
-        alert('Quantidade precisa ser maior que zero e um número inteiro')
-      }
+    amount: number
+  ) {
+    if (amount <= 0 || Number.isInteger(amount) == false) {
+      alert("Quantidade precisa ser maior que zero e um número inteiro");
+    }
 
-      const response = api.post('/inventory', {productId, type, order_amount: amount})
+    const product = products.find(product => product.id === productId)
 
-      const { order } = (await response).data;
-
-      setProducts([...inventoryOrders, order]);
-
-      alert("Ordem Criada com sucesso");
-  }
-
-  async function deleteOrder(orderId: string) {
-    if(!window.confirm('Você quer mesmo deletar essa ordem?')) {
+    if(!product) {
+      alert('Produto não encontrado');
       return
     }
 
-    await api.delete(`/inventory/${orderId}`)
+    if(type === 'out' && amount > product?.amount) {
+      alert('Ordem de saída com quantidade maior do que em estoque.')
+      return
+    }
+
+    const response = api.post("/inventory", {
+      productId,
+      type,
+      order_amount: amount,
+    });
+
+    const { order } = (await response).data;
+
+    setInventoryOrders([...inventoryOrders, order]);
+
+    alert("Ordem Criada com sucesso");
+  }
+
+  async function updateOrder(
+    e: React.FormEvent<HTMLFormElement>,
+    orderId: string,
+    productId: string,
+    type: 'in' | 'out',
+    order_amount: number
+  ) {
+    e.preventDefault();
+
+    if (order_amount <= 0 || Number.isInteger(order_amount) == false) {
+      alert("Quantidade precisa ser maior que zero e um número inteiro");
+      return
+    }
+
+    const product = products.find(product => product.id === productId)
+
+    if(!product) {
+      alert('Produto não encontrado');
+      return
+    }
+
+    if(type === 'out' && order_amount > product?.amount) {
+      alert('Ordem de saída com quantidade maior do que em estoque.')
+      return
+    }
+
+    await api
+      .put("products", { orderId, type, order_amount })
+      .catch((error) => console.log(error));
+
+    const newOrdersArray = [...inventoryOrders];
+
+    const ordertIndex = newOrdersArray.findIndex(
+      (newOrder) => newOrder.id === orderId
+    );
+
+    newOrdersArray[ordertIndex].type = type;
+    newOrdersArray[ordertIndex].order_amount = order_amount;
+
+    setInventoryOrders([...newOrdersArray]);
+
+    alert("Ordem alterada com sucesso");
+  }
+
+  async function deleteOrder(orderId: string) {
+    if (!window.confirm("Você quer mesmo deletar essa ordem?")) {
+      return;
+    }
+
+    await api.delete(`/inventory/${orderId}`);
 
     const newOrdersList = inventoryOrders.filter(
       (order) => order.id !== orderId
     );
 
-    setInventoryOrders(newOrdersList)
+    setInventoryOrders(newOrdersList);
   }
 
   return (
     <CrudContext.Provider
-      value={{ products, inventoryOrders, createNewProduct, updateProduct, deleteProduct, createNewOrder, deleteOrder }}
+      value={{
+        products,
+        inventoryOrders,
+        createNewProduct,
+        updateProduct,
+        deleteProduct,
+        createNewOrder,
+        updateOrder,
+        deleteOrder,
+      }}
     >
       {children}
     </CrudContext.Provider>

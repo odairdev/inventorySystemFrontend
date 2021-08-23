@@ -10,7 +10,7 @@ export function CreateNewForm({ isProduct }: CreateNewFormProps) {
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [amount, setAmount] = useState<number>(1);
-  const [type, setType] = useState<string>('in')
+  const [type, setType] = useState<string>('')
   const [typeValue, setTypeValue] = useState<string>('Entrada')
   const [productName, setProductName] = useState('')
   const [productId, setProductId] = useState('')

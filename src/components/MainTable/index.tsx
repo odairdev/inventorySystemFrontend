@@ -33,7 +33,6 @@ export function MainTable({ isProduct }: MainTableProps) {
 
   const ordersPageCount = Math.ceil(inventoryOrders.length / PER_PAGE);
   const ordersPageData = inventoryOrders.slice(offset, offset + PER_PAGE);
-  console.log(ordersPageData)
 
   function handlePageClick(data: any) {
     setCurrentPage(data.selected)

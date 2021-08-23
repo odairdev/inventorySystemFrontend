@@ -18,8 +18,10 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
+  const [orderAmount, setOrderAmount] = useState<number>(0);
   const [type, setType] = useState("");
-  const { updateProduct } = useCrud();
+  const [correctType, setCorrectType] = useState<'in' | 'out'>('in')
+  const { updateProduct, updateOrder } = useCrud();
 
   function typeInputOnChange(event: React.FormEvent<HTMLInputElement>) {
     const { value } = event.currentTarget;
@@ -39,10 +41,12 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
     } else {
       if (selectedOrder.type === "in") {
         setType("Entrada");
+        setCorrectType('in')
       } else {
         setType("Saída");
+        setCorrectType('out')
       }
-      setAmount(selectedOrder.order_amount);
+      setOrderAmount(selectedOrder.order_amount);
     }
   }, [isProduct, selectedProduct, selectedOrder]);
 
@@ -60,16 +64,17 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
       >
         <img src={closeImg} alt="Fechar" />{" "}
       </button>
-      <form
-        className={styles.formContainer}
-        onSubmit={(e) =>
-          updateProduct(e, selectedProduct.id, name, category, amount)
-        }
-      >
-        <h2>{isProduct ? "Editar Produto" : "Editar Ordem"}</h2>
 
-        {isProduct ? (
-          <>
+      <h2>{isProduct ? "Editar Produto" : "Editar Ordem"}</h2>
+
+      {isProduct ? (
+        <>
+          <form
+            className={styles.formContainer}
+            onSubmit={(e) =>
+              updateProduct(e, selectedProduct.id, name, category, amount)
+            }
+          >
             <input
               type="text"
               placeholder="Nome"
@@ -83,9 +88,22 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             />
-          </>
-        ) : (
-          <>
+            <input
+              type="number"
+              placeholder="5"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+            />
+            <button type="submit">Editar Produto</button>
+          </form>
+        </>
+      ) : (
+        <>
+          <form
+            className={styles.formContainer}
+            onSubmit={(e) =>
+              updateOrder(e, selectedOrder.id, selectedOrder.product.id, correctType, orderAmount)}
+          >
             <input
               type="text"
               list="type"
@@ -98,17 +116,17 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
               <option value="Entrada"></option>
               <option value="Saída"></option>
             </datalist>
-          </>
-        )}
-        <input
-          type="number"
-          placeholder="5"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-        />
 
-        <button type="submit">Editar Produto</button>
-      </form>
+            <input
+              type="number"
+              placeholder="5"
+              value={orderAmount}
+              onChange={(e) => setOrderAmount(Number(e.target.value))}
+            />
+            <button type="submit">Editar Ordem</button>
+          </form>
+        </>
+      )}
     </Modal>
   );
 }
