@@ -5,13 +5,14 @@ import Modal from "react-modal";
 import closeImg from "../../assets/close.svg";
 import styles from "./styles.module.scss";
 import { useState } from "react";
+import { useEffect } from "react";
 
 interface ModalWindowProps {
   isProduct: boolean;
 }
 
 export function ModalWindow({ isProduct }: ModalWindowProps) {
-  const { isModalOpen, handleCloseModal } = useContext(ModalContext);
+  const { isModalOpen, selectedProduct, selectedOrder, handleCloseModal } = useContext(ModalContext);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
@@ -26,6 +27,21 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
   const clear = (event: React.FormEvent<HTMLInputElement>) => {
     event.currentTarget.value = "";
   };
+
+  useEffect(() => {
+    if(isProduct) {
+      setName(selectedProduct.name)
+      setCategory(selectedProduct.category)
+      setAmount(selectedProduct.amount)
+    } else {
+      if(selectedOrder.type === 'in') {
+        setType('Entrada')
+      } else {
+        setType('Saída')
+      }
+      setAmount(selectedOrder.order_amount)
+    }
+  }, [isProduct, selectedProduct, selectedOrder])
 
   return (
     <Modal
@@ -68,13 +84,6 @@ export function ModalWindow({ isProduct }: ModalWindowProps) {
             </datalist>
           </>
         )}
-
-        <input
-          type="text"
-          placeholder="Enlatados"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        />
         <input
           type="number"
           placeholder="5"

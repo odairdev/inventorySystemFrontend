@@ -5,6 +5,7 @@ import { ModalContext } from "../../contexts/ModalContext";
 import { useCrud } from "../../hooks/useCrud";
 import styles from "./styles.module.scss";
 import ReactPaginate from "react-paginate";
+import { InventoryOrders } from "../../contexts/crud";
 
 interface MainTableProps {
   isProduct: boolean;
@@ -22,7 +23,7 @@ export function MainTable({ isProduct }: MainTableProps) {
   const [dataAvailable, isDataAvailable] = useState<any | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const { products, inventoryOrders, updateProduct } = useCrud();
-  const { handleOpenModal } = useContext(ModalContext);
+  const { handleOpenModal, setSelectedProduct, setSelectedOrder } = useContext(ModalContext);
 
   const PER_PAGE = 5;
   const offset = currentPage * PER_PAGE;
@@ -52,6 +53,16 @@ export function MainTable({ isProduct }: MainTableProps) {
       isDataAvailable(inventoryOrders);
     }
   }, [isProduct, products, inventoryOrders]);
+
+  function handleEditProduct(product: ProductsInterface) {
+    setSelectedProduct(product)
+    handleOpenModal()
+  }
+
+  function handleEditOrder(order: InventoryOrders) {
+    setSelectedOrder(order)
+    handleOpenModal()
+  }
 
   return (
     <>
@@ -86,7 +97,7 @@ export function MainTable({ isProduct }: MainTableProps) {
                           <button
                             type="button"
                             className={styles.edit}
-                            onClick={handleOpenModal}
+                            onClick={() => handleEditProduct(product)}
                           >
                             Editar
                           </button>
@@ -151,7 +162,7 @@ export function MainTable({ isProduct }: MainTableProps) {
                           <button
                             type="button"
                             className={styles.edit}
-                            onClick={handleOpenModal}
+                            onClick={() => handleEditOrder(order)}
                           >
                             Editar
                           </button>

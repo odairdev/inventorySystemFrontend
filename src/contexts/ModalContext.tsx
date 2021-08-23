@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useState } from "react";
+import { InventoryOrders, ProductsInterface } from "./crud";
 
 interface ModalContextProviderProps {
   children: ReactNode;
@@ -6,8 +7,11 @@ interface ModalContextProviderProps {
 
 interface ModalContextData {
   isModalOpen: boolean;
-  selectedOption: [];
   handleOpenModal: () => void;
+  selectedProduct: ProductsInterface;
+  setSelectedProduct: (product: ProductsInterface) => void;
+  setSelectedOrder: (order: InventoryOrders) => void;
+  selectedOrder: InventoryOrders;
   handleCloseModal: () => void;
 }
 
@@ -18,7 +22,8 @@ export const ModalContext = createContext<ModalContextData>(
 export function ModalContextProvider({ children }: ModalContextProviderProps) {
     const [isModalOpen, setIsModalOpen] =
     useState(false);
-    const [selectedOption, setSelectedOption] = useState<[]>([])
+    const [selectedProduct, setSelectedProduct] = useState<ProductsInterface>({} as ProductsInterface)
+    const [selectedOrder, setSelectedOrder] = useState<InventoryOrders>({} as InventoryOrders)
 
   function handleOpenModal() {
     setIsModalOpen(true);
@@ -32,7 +37,10 @@ export function ModalContextProvider({ children }: ModalContextProviderProps) {
     <ModalContext.Provider
       value={{
         isModalOpen,
-        selectedOption,
+        selectedProduct,
+        setSelectedProduct,
+        setSelectedOrder,
+        selectedOrder,
         handleOpenModal,
         handleCloseModal,
       }}
