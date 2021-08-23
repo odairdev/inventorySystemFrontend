@@ -22,7 +22,7 @@ export interface ProductsInterface {
 export function MainTable({ isProduct }: MainTableProps) {
   const [dataAvailable, isDataAvailable] = useState<any | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const { products, inventoryOrders, updateProduct } = useCrud();
+  const { products, inventoryOrders, deleteProduct, deleteOrder } = useCrud();
   const { handleOpenModal, setSelectedProduct, setSelectedOrder } = useContext(ModalContext);
 
   const PER_PAGE = 5;
@@ -31,8 +31,9 @@ export function MainTable({ isProduct }: MainTableProps) {
   const productsPageCount = Math.ceil(products.length / PER_PAGE);
   const productsPageData = products.slice(offset, offset + PER_PAGE);
 
-  const ordersPageCount = Math.ceil(products.length / PER_PAGE);
+  const ordersPageCount = Math.ceil(inventoryOrders.length / PER_PAGE);
   const ordersPageData = inventoryOrders.slice(offset, offset + PER_PAGE);
+  console.log(ordersPageData)
 
   function handlePageClick(data: any) {
     setCurrentPage(data.selected)
@@ -101,7 +102,7 @@ export function MainTable({ isProduct }: MainTableProps) {
                           >
                             Editar
                           </button>
-                          <button type="button" className={styles.delete}>
+                          <button type="button" className={styles.delete} onClick={() => deleteProduct(product.id)}>
                             Excluir
                           </button>
                         </div>
@@ -166,7 +167,7 @@ export function MainTable({ isProduct }: MainTableProps) {
                           >
                             Editar
                           </button>
-                          <button type="button" className={styles.delete}>
+                          <button type="button" className={styles.delete} onClick={()=> deleteOrder(order.id)}>
                             Excluir
                           </button>
                         </div>
@@ -188,7 +189,7 @@ export function MainTable({ isProduct }: MainTableProps) {
         </table>
         <ReactPaginate
         pageCount={ordersPageCount}
-        pageRangeDisplayed={3}
+        pageRangeDisplayed={5}
         marginPagesDisplayed={2}
         onPageChange={handlePageClick}
         previousLabel='←'

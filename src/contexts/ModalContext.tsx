@@ -30,7 +30,9 @@ export function ModalContextProvider({ children }: ModalContextProviderProps) {
   }
 
   function handleCloseModal() {
-    setIsModalOpen(false);
+    setSelectedProduct({} as ProductsInterface)
+    setSelectedOrder({} as InventoryOrders)
+    setIsModalOpen(false);    
   }
 
   return (

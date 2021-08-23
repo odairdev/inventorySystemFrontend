@@ -16,7 +16,9 @@ interface CrudContextData {
     category: string,
     amount: number
   ) => Promise<void>;
-  createNewOrder: (productId: string, type: string, amount: number) => Promise<void>
+  deleteProduct: (productId: string) => Promise<void>;
+  createNewOrder: (productId: string, type: string, amount: number) => Promise<void>;
+  deleteOrder: (orderId: string) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -129,8 +131,18 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
     alert("Produto alterado com sucesso");
   }
 
-  async function deleteProduct() {
-    
+  async function deleteProduct(productId: string) {
+    if(!window.confirm('Você quer mesmo deletar esse produto?')) {
+      return
+    }
+
+    await api.delete(`/products/${productId}`).catch(error => console.log(error.message))
+
+    const newProductsList = products.filter(
+      (product) => product.id !== productId
+    );
+
+    setProducts(newProductsList)
   }
 
   async function createNewOrder(
@@ -151,9 +163,23 @@ export function CrudContextProvider({ children }: AuthProviderProps) {
       alert("Ordem Criada com sucesso");
   }
 
+  async function deleteOrder(orderId: string) {
+    if(!window.confirm('Você quer mesmo deletar essa ordem?')) {
+      return
+    }
+
+    await api.delete(`/inventory/${orderId}`)
+
+    const newOrdersList = inventoryOrders.filter(
+      (order) => order.id !== orderId
+    );
+
+    setInventoryOrders(newOrdersList)
+  }
+
   return (
     <CrudContext.Provider
-      value={{ products, inventoryOrders, createNewProduct, updateProduct, createNewOrder }}
+      value={{ products, inventoryOrders, createNewProduct, updateProduct, deleteProduct, createNewOrder, deleteOrder }}
     >
       {children}
     </CrudContext.Provider>
